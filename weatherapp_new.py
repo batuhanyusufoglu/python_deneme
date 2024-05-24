@@ -7,6 +7,9 @@ def get_weather(city,units) :
         "appid" : API_KEY ,
         "units" : units 
     }
+
+
+
         
     try:
       
@@ -15,18 +18,27 @@ def get_weather(city,units) :
       return response.json()
     except requests.exceptions.HTTPError :
          print("HTTP Error occured")
-    #except requests.exceptions.ConnectionError :
-         #print("Connection error occured")
+    except requests.exceptions.ConnectionError :
+         print("Connection error occured")
     except requests.exceptions.Timeout:
          print("timeout error occured")
     except requests.exceptions.RequestException:
          print("an error occured")
     return None
+def getLocation(inputLocation, API_KEY):
+    FETCH_COORDS_API_LINK = "http://api.openweathermap.org/geo/1.0/direct?q="+ inputLocation +"&limit=5&appid=" + API_KEY
+    locationFetch = requests.get(FETCH_COORDS_API_LINK)
+    locationCoords = locationFetch.json()
+    lat = locationCoords[0]['lat']
+    lon = locationCoords[0]['lon']
+    print("lateral:" + str(lat) + " " + "long:" + str(lon))
+    return lat, lon
 def main():
     while True:
      city =input("please enter the city name to continue or type exit to close:")
      if city=="exit" :
          break
+     getLocation(city, API_KEY)
      units =input("please enter the unit: ex. : metric ")
      weather_data=get_weather(city,units)
      if weather_data is None:
